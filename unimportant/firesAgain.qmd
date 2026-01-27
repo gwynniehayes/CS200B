@@ -1,0 +1,34 @@
+---
+title: "firesAgain"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: FALSE
+
+library(tidyverse)
+library(stringr)
+library(rvest)
+library(polite)
+library(htmltools)
+library(robotstxt)
+```
+
+```{r}
+# Our first table came from wikipedia, which is an allowed source
+is_valid_robotstxt("https://en.wikipedia.org/wiki/2025_United_States_wildfires")
+
+#reading the html of the website
+wildfires2025 <- read_html("https://en.wikipedia.org/wiki/2025_United_States_wildfires")
+
+fires2025 <- html_table(wildfires2025, header = TRUE, fill = TRUE)[[4]]
+```
+
+
+```{r}
+fire_states <- fires2025 |>
+  distinct(State)
+```t
+
