@@ -1,0 +1,52 @@
+---
+title: "PythonEDA"
+format: html
+---
+
+---
+title: "Cleaning Yarn"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(reticulate)
+#py_install("pandas")
+#py_install("pip")
+#py_install("plotnine")
+```
+
+```{python}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+yarn = pd.read_csv("https://raw.githubusercontent.com/gwynniehayes/CS200B/refs/heads/main/yarn.csv")
+yarn.describe(include = "all")
+yarn = pd.DataFrame(yarn)
+
+filter_yarn = yarn.query("discontinued" == "FALSE")
+
+filtered = yarn[(yarn["discontinued"] == "TRUE")]
+```
+
+```{python}
+fig, axes = plt.subplots(1, 2, figsize=(20, 5))
+
+sns.histplot(data=yarn,
+             x='rating_average',
+             bins=20, alpha=0.6,
+             ax=axes[0])
+axes[0].set_title('High Frequency of an Average Rating of 5/5' )
+axes[0].set_xlabel('Average Rating of Yarns')
+axes[0].set_ylabel('Frequency')
+
+sns.boxplot(data=yarn,
+             y='yarn_weight_name',
+             x = "rating_average",
+             ax=axes[1])
+axes[1].set_title('Most yarn weights have a mean average rating around 4.5/5' )
+axes[1].set_xlabel('Average Rating of Yarns')
+axes[1].set_ylabel('Yarn Weight')
+```

@@ -1,0 +1,98 @@
+---
+title: "ProjectChecks"
+format: html
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r}
+library(reticulate)
+```
+#### **Workflow**
+
+-   What will be your goal in working on this project?
+
+-   What will be your source for data for the project?
+    If this requires you to gather data, how will you go about this?
+
+-   What data cleaning, conversion, or preparation will you need to do to prepare your data set?
+
+-   What kinds of exploratory data analysis will you do?
+
+-   Which machine learning algorithms will you use to train models?
+
+-   Why are you choosing these algorithms?
+
+-   How will you attempt to optimize your models?
+
+-   How will you analyze the accuracy of your models?
+
+#### **Progress Check 2**
+
+Create a Colab workbook and copy-paste the workflow plan above into a text box.
+Identify the dataset you’d like to use for your project, and fill out the project goal (first question).
+You may have to do some background research on your topic.
+Then fill out the next three questions.
+
+Next, make sure your data is accessible on a git repo somewhere so you can get started on the next PC.
+Depending on your project, this might be as simple as locating a git repo that has your data set, or it might require you to upload the dataset to your personal git repo.
+
+Submit the link to your colab workbook to the Moodle submission.
+
+Dataset:
+
+```{python}
+import pandas as pd
+yarn = pd.read_csv("https://raw.githubusercontent.com/gwynniehayes/CS200B/refs/heads/main/yarn.csv")
+```
+
+**What will be your goal in working on this project?** I would really like to make some maps, specifically an interactive globe.
+I've done some mapping in the past and would really like to experiment with making some more interesting things.
+I am a little confused on the project parameters, but I think it would be really cool to make an interactive dashboard kind of things where the user can see what type of yarns are the best for the type project that they are working on.
+
+**What will be your source for data for the project? If this requires you to gather data, how will you go about this?** I am using the yarn data set compiled from reviews on Ravelry as well as finding location data for each of the yarn companies in the data set.
+I have not done this yet as it is something I would probably have to manually compile for it to be accurate.
+
+**What data cleaning, conversion, or preparation will you need to do to prepare your data set?** I will need to subset this data so that there is less of it if I want to do location data.
+A start to this would be yarns that have 10 reviews or more, this gets the data set from 100,000 to about 31,000 rows while not ideal it would make the mapping of yarn companies easier.
+I also know there are some weird characters in this dataset in the yarn names which R at least did not like, this would probably also need to be cleaned in order to do some analysis.
+It could be really interesting to make the data by brand instead of specific yarn types but this would also take away a lot of the other interesting variables.
+But it could be a different type of analysis to do.
+
+**What kinds of exploratory data analysis will you do?** Looking at the brands with the most reviews and the best reviews.
+As well as the specific fiber types and see if that has an correlation to brand and the reviews.
+
+#### **Progress Check 3**
+
+Perform some exploratory data analysis using your workbook.
+Discuss the results, and what this tells you about your data, as well as your expectations for your results.
+This should include some data visualizations that go beyond a basic chart.
+
+Submit a picture of a plot you made along with a quick reflection to the Moodle submission
+
+#### **Progress Check 4**
+
+For this model I want to create a specific recommendation for which type of yarn you should use based on personal preference and the type of project that you are working on.
+When selecting yarn for a project there are hundreds of thousands of options and some people like me have a very hard time making decisions.
+In researching I didn’t find anything similar to what I want to do.
+Most of the information I could find was articles that were just some things to consider when choosing yarn.
+There is also a lot of personal preference in what type of fiber you like to work with.
+Given a lack of something like this existing I’d like to create a model that can give recommendations for the best yarn for a specific project based on customer reviews.
+
+https://www.knitpicks.com/learning-center/guide-to-choosing-yarn?s
+rsltid=AfmBOooJ8Kf1FO-R6pjoY9q6J5G94kUVZ56-rMJR1jUrzurmkeGU2iqb
+
+https://nimble-needles.com/wool-and-tools/how-to-choose-yarn-for-knitting/
+
+#### **Progress Check 5**
+
+
+
+#### **Progress Check 6**
+
+#### **Progress Check 7**
+
+#### **Progress Check 8**
+
+#### **Progress Check 9**

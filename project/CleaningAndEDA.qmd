@@ -1,0 +1,20 @@
+---
+title: "Cleaning Yarn"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+yarn <- read.csv("~/Desktop/16/CS200B/project/yarn.csv")
+```
+
+```{r}
+yarn |>
+  count(machine_washable)
+```
+

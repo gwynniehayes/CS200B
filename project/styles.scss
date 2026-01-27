@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap');
+
+// Colors
+$orange: #272716;;
+$light-pink: white;
+$magenta: #db6400;
+$green: black;
+$light-blue:#67A3A6;
+
+// Base body styles
+body {
+  font-family: 'Nanum Myeongjo', serif;
+  background-color: $light-pink;
+  color: $green;
+}
+
+// Navbar styling
+.navbar {
+  background-color: $magenta !important;
+}
+.navbar .navbar-brand,
+.navbar .navbar-nav > li > a {
+  color: $orange !important;
+}
+.navbar .navbar-nav > li > a:hover {
+  color: $light-blue !important;
+}
+.navbar .navbar-nav > li.active > a,
+.navbar .nav-link:hover,
+.navbar .navbar-nav > li > a.active {
+  color: $light-blue !important; 
+  background-color: $magenta !important;
+}
+.footer {
+  background-color: $magenta;
+  color: $orange;
+}
+a {
+  color: $green;
+}
+a:hover {
+  color: darken($green, 10%);
+}
+
+code {
+  background-color: $magenta;
+  color: $light-blue;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+img {
+  display: block;
+  margin: 1rem auto;
+}
+.rounded-img {
+  border-radius: 15px;
+}
+
+.center-text {
+  text-align: center;
+}
+
+figcaption,
+table caption {
+  color: $green;
+}
+

@@ -1,0 +1,24 @@
+---
+title: "yarnEDA"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+yarn <- read_csv("~/Desktop/16/CS 200B/yarn.csv")
+yarn_adm <- read_csv("~/Desktop/15/Sem 1/MSCS341/final_yarn_tbl.csv")
+
+write_csv(yarn_companies, "yarn_companies.csv")
+```
+
+```{r}
+yarn_companies <- yarn_cleaning |> count(yarn_company_name)
+```
+
+```{r}
+yarn_cleaning <- yarn |>
+  filter(discontinued == "FALSE")
+```
+

@@ -1,0 +1,11 @@
+---
+title: "Yarn Dashboard"
+authors: "Gwynnie Hayes"
+output:
+  flexdashboard::flex_dashboard:
+    css: styles.scss
+runtime: shiny
+editor_options: 
+  chunk_output_type: console
+---
+
