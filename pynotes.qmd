@@ -1,9 +1,0 @@
----
-title: "pynotes"
-format: html
----
-
-pyjanitor 
-
-
-clean yarn weight names, get rid of the aran/worsted and dk/sport

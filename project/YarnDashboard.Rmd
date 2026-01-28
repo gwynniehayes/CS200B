@@ -8,4 +8,40 @@ runtime: shiny
 editor_options: 
   chunk_output_type: console
 ---
+```{r}
+library(tidyverse)
 
+yarn <- read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
+```
+
+
+Exploring Yarns 
+=====
+
+Inputs {.sidebar}
+-------------------------
+
+```{r}
+inputPanel(
+  selectInput("eda_var", label = "Select a Variable to Explore",
+              choices = c("Yardage" = "yardage", 
+                          "Rating Average" = "rating_average",
+                          "Rating Counts" = "rating_count"))
+)
+```
+
+```{r}
+inputPanel(
+  selectInput()
+)
+```
+
+Column
+--------
+```{r, warning= FALSE, echo=FALSE, message=FALSE}
+renderPlot({
+  yarn |>
+    ggplot(aes(x = .data[[input$eda_var]])) +
+    geom_boxplot()
+})
+```

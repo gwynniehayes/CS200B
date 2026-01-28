@@ -1,20 +1,16 @@
 ---
 title: "PythonEDA"
 format: html
----
-
----
-title: "Cleaning Yarn"
-format: html
 editor_options: 
   chunk_output_type: console
 ---
 
 ```{r}
 library(reticulate)
-#py_install("pandas")
-#py_install("pip")
-#py_install("plotnine")
+py_install("pandas")
+py_install("pip")
+py_install("plotnine")
+py_install("seaborn")
 ```
 
 ```{python}
@@ -22,13 +18,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-yarn = pd.read_csv("https://raw.githubusercontent.com/gwynniehayes/CS200B/refs/heads/main/yarn.csv")
+yarn = pd.read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
 yarn.describe(include = "all")
 yarn = pd.DataFrame(yarn)
-
-filter_yarn = yarn.query("discontinued" == "FALSE")
-
-filtered = yarn[(yarn["discontinued"] == "TRUE")]
 ```
 
 ```{python}

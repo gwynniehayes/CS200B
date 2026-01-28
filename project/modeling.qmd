@@ -1,0 +1,36 @@
+---
+title: "modeling"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(reticulate)
+py_install("pandas")
+py_install("pip")
+py_install("plotnine")
+py_install("seaborn")
+py_install("scikit-learn")
+```
+
+```{python}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+yarn = pd.read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
+yarn.describe(include = "all")
+```
+
+```{python}
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+data = pd.DataFrame(yarn)
+X = data.data
+y = data.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+```
+
