@@ -3,9 +3,9 @@
 // Colors
 $orange: #272716;;
 $light-pink: white;
-$magenta: #db6400;
+$magenta: #F76C5E;
 $green: black;
-$light-blue:#67A3A6;
+$light-blue:#540B05;
 
 // Base body styles
 body {
@@ -39,7 +39,7 @@ a {
   color: $green;
 }
 a:hover {
-  color: darken($green, 10%);
+  color: darken($light-pink, 10%);
 }
 
 code {
@@ -65,4 +65,3 @@ figcaption,
 table caption {
   color: $green;
 }
-

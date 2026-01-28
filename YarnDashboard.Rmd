@@ -4,6 +4,7 @@ authors: "Gwynnie Hayes"
 output:
   flexdashboard::flex_dashboard:
     css: styles.scss
+    storyboard: true
 runtime: shiny
 editor_options: 
   chunk_output_type: console
@@ -30,12 +31,6 @@ inputPanel(
 )
 ```
 
-```{r}
-inputPanel(
-  selectInput()
-)
-```
-
 Column
 --------
 ```{r, warning= FALSE, echo=FALSE, message=FALSE}
@@ -45,3 +40,8 @@ renderPlot({
     geom_boxplot()
 })
 ```
+
+
+A look at clean
+=======
+

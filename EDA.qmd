@@ -1,0 +1,93 @@
+---
+title: "EDA"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(ggcorrplot)
+library(GGally)
+
+yarn <- read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
+```
+
+```{r}
+head(yarn)
+glimpse(yarn)
+```
+
+```{r}
+colSums(is.na(yarn))
+
+sapply(yarn, function(x) length(unique(x)))
+```
+
+```{r}
+summary(yarn)
+```
+
+```{r}
+yarn |> 
+  count(fiber_type_name) |>
+  arrange(desc(n))
+
+# Bar plot
+ggplot(yarn, aes(x=fiber_type_name)) +
+  geom_bar(fill="pink") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title="Distribution of Fiber Types", x="Fiber Type", y="Count")
+```
+
+```{r}
+numeric_cols <- c("yardage", "yarn_weight_ply", "rating_average")
+
+for (col in numeric_cols){
+  ggplot(yarn, aes_string(x=col)) +
+    geom_histogram(fill="lightblue", bins=30) +
+    labs(title=paste("Distribution of", col), x=col, y="Count") +
+    theme_minimal() -> p
+  print(p)
+}
+```
+
+```{r}
+categorical_cols <- c("yarn_weight_name", "texture_clean", "yarn_company_name")
+
+for(col in categorical_cols){
+  ggplot(yarn, aes_string(x=col)) +
+    geom_bar(fill="coral") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title=paste("Count of", col), x=col, y="Count") -> p
+  print(p)
+}
+```
+
+```{r}
+numeric_data <- yarn |> 
+  select(yardage, yarn_weight_ply, rating_average) |>
+  na.omit()
+cor_matrix <- cor(numeric_data)
+
+ggcorrplot(cor_matrix, lab=TRUE)
+
+ggpairs(yarn, columns = c("yardage", "yarn_weight_ply", "rating_average"), aes(color=fiber_type_name, alpha=0.5))
+```
+
+```{r}
+fiber_weight <- table(yarn$fiber_type_name, yarn$yarn_weight_name)
+prop.table(fiber_weight, 1) * 100
+
+library(reshape2)
+fiber_weight_melt <- melt(prop.table(fiber_weight, 1) * 100)
+ggplot(fiber_weight_melt, aes(Var2, Var1, fill=value)) +
+  geom_tile() +
+  geom_text(aes(label=sprintf("%.1f", value)), color="white") +
+  scale_fill_gradient(low="lightblue", high="darkblue") +
+  labs(title="Fiber Type (%) by Yarn Weight", x="Weight", y="Fiber Type")
+```
+
