@@ -32,11 +32,11 @@ Gwynnie Hayes
 
 **Introduction**
 
-Exploring a data set about yarn. This data set was created from reviews of yarn on the site [Ravelry](https://www.ravelry.com/){.uri}. Ravelry is a website that has 1000's of patterns for all kinds of crafts that use yarn. Most commonly knitting and crocheting.
+Exploring a data set about yarn. This data set was created from reviews of yarn on the site [Ravelry](https://www.ravelry.com/){.uri}. Ravelry is a website that has 1000's of patterns for all kinds of crafts that use yarn. Most commonly knitting and crocheting. The original dataset I used was published to TidyTuesday in 2022, [Original Data](https://github.com/rfordatascience/tidytuesday/tree/main/data/2022/2022-10-11){.uri}. 
 
-**Original Idea** 
+**Model Goal** 
 
-Initially I wanted to create a machine learning model that would give suggestions for specific yarns based on specifications from the user. Choosing a yarn for a project is a very subjective process. There are many things to consider when selecting yarn for a project:
+I wanted to create a machine learning model that would give suggestions for specific yarns based on specifications from the user. Choosing a yarn for a project is a very subjective process. There are many things to consider when selecting yarn for a project:
 
 -   Is it a wearable?
 
@@ -51,6 +51,10 @@ There are many articles online with guides and things to consider for your proje
 
 **Expanding in the Future**
 
+I initially wanted to make a new feature of this data set that included the location of each of the yarn brands in hopes of mapping them. I think it would have been really interesting to see where a lot of yarn is getting produced, however in this data set there were over 10,000 different yarn brands and to get the location I would have had to individually search for each of them. Given the time frame this was not at all feasible. But is something I am really interested in still and might slowly work on in the future.
+
+Another feature that would have been really interesting to have would be the price of each skein, this could also probably be created but would taken even longer given the 100,000 distinct yarns in this data set. 
+
 # Data Dictionary / Cleaning
 
 Like many things yarn has its very own vocabulary. Some relevant terms in this case are 
@@ -58,17 +62,17 @@ Like many things yarn has its very own vocabulary. Some relevant terms in this c
 -   Weight - this refers the how thick the yarn is 
 -   Ply - this refers how many strands of fiber are twisted together
 -   Texture - this is similar to ply and in this data set the two are in the same columns but this refers to the feel of the yarn
--   Gauge - 
+-   Gauge Divisor - Is the number of stitches it takes to meet gauge
+-   Gauge - is a measurement of stitches per in to make sure your project will be the correct size 
 -   WPI - wraps per inch, this is a way of measuring the weight of a yarn
 
+## Data Cleaning
 
-# Other Modeling
+[Clean Data](https://raw.githubusercontent.com/gwynniehayes/CS200B/refs/heads/main/final_yarn.csv){.uri}
+I have used this data set in the past and it is a very overwhelming data set with many missing values. I started this project by trying to pair down this data set into a more manageable set. All the data cleaning I did was in R as I am much more familiar with R. 
 
-In addition to creating an unsupervised model I also wanted to create a model that predicted the fiber type of a yarn based on the reviews and attributes of the yarn. 
-
-This model is not a very feasible model because any yarn can be made to be any weight or fiber and based of user reviews this is very unlikely to be a very accurate model. But it was still interesting to create.
-
-
+I started by filtering out yarns that were discontinued because if I wanted to give recommendations to the user I wanted them to be able to still buy the yarn. I then decided to join a data set with each of the fiber contents from the yarns which I quickly discovered had almost doubled the data because the fibers data set had a different row for each fiber type in a particular yarn. I decided to only take yarns that were 100% one fiber type, simply to just minimize the amount of data I was dealing with. I removed a few columns that contained only NA values or were not important to modeling or the type of craft I was interested in.
+I then looked at the reviews data and removed all NA values because it is not helpful to give a recommendation for something that is mostly a personal preference when there are no reviews, also in this I removed yarns that had less then 10 reviews to give the yarn a fighting chance at being accurately rated. 
 
 # Exploring the Data
 
@@ -214,6 +218,12 @@ output$recommendation_table <- renderDT({
 
 I created a unsupervised learning model that would give the user recommendations for specific yarns based on their preferences that they can indicate. I then tried to incorporate it into this dashboard so that you could actually change the preferences but was having issues getting it to work. Instead I have the output of the functions I created in order to show the output of the model.
 
+Input:
+'grams': 50,
+'yardage': 300,
+'yarn_weight_wpi': 18,
+'texture': 'plied'
+
 ```{python}
 user_input = {
     'grams': 50,
@@ -224,4 +234,20 @@ user_input = {
 recommend_from_preference(user_input)
 ```
 
+Input: 
+'grams': 100,
+'yardage': 50,
+'yarn_weight_wpi': 4,
+'texture': '1 ply'
 
+```{python}
+user_input = {
+    'grams': 100,
+    'yardage': 50,
+    'yarn_weight_wpi': 4,
+    'texture': "1 ply"}
+
+recommend_from_preference(user_input)
+```
+
+## Column
