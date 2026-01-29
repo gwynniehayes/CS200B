@@ -9,39 +9,219 @@ runtime: shiny
 editor_options: 
   chunk_output_type: console
 ---
-```{r}
+```{r, echo = FALSE, warning=FALSE}
 library(tidyverse)
+library(kableExtra)
+library(reshape2)
+library(flexdashboard)
+library(shiny)
+library(reticulate)
+library(dplyr)
+library(DT)
 
-yarn <- read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
+use_virtualenv("cs200b-env", required = TRUE)
+source_python("~/Desktop/16/CS200B/recommender.py")
+yarn <- read_csv("~/Desktop/16/CS200B/final_yarn.csv")
 ```
 
+# Introduction
 
-Exploring Yarns 
-=====
+**Author**
 
-Inputs {.sidebar}
--------------------------
+Gwynnie Hayes
 
+**Introduction**
+
+Exploring a data set about yarn. This data set was created from reviews of yarn on the site [Ravelry](https://www.ravelry.com/){.uri}. Ravelry is a website that has 1000's of patterns for all kinds of crafts that use yarn. Most commonly knitting and crocheting.
+
+**Original Idea** 
+
+Initially I wanted to create a machine learning model that would give suggestions for specific yarns based on specifications from the user. Choosing a yarn for a project is a very subjective process. There are many things to consider when selecting yarn for a project:
+
+-   Is it a wearable?
+
+-   Does it need structure?
+
+-   Budget?
+
+-   Personal preference?
+
+
+There are many articles online with guides and things to consider for your project but none of them give definitive suggestions. Another common way to get yarn suggestions is based on the pattern. More commonly in knitting patterns a specific yarn is called for. But for a broke college student like myself I don't have the money to buy the 200\$ worth of a specific yarn a project wants. So taking the features of yarn I wanted to create a model that would give definitive suggestions for the yarn to use based on the project and personal preferences of the crafter.
+
+**Expanding in the Future**
+
+# Data Dictionary / Cleaning
+
+Like many things yarn has its very own vocabulary. Some relevant terms in this case are 
+
+-   Weight - this refers the how thick the yarn is 
+-   Ply - this refers how many strands of fiber are twisted together
+-   Texture - this is similar to ply and in this data set the two are in the same columns but this refers to the feel of the yarn
+-   Gauge - 
+-   WPI - wraps per inch, this is a way of measuring the weight of a yarn
+
+
+# Other Modeling
+
+In addition to creating an unsupervised model I also wanted to create a model that predicted the fiber type of a yarn based on the reviews and attributes of the yarn. 
+
+This model is not a very feasible model because any yarn can be made to be any weight or fiber and based of user reviews this is very unlikely to be a very accurate model. But it was still interesting to create.
+
+
+
+# Exploring the Data
+
+Sidebar {.sidebar}
+---------------------------------
 ```{r}
 inputPanel(
-  selectInput("eda_var", label = "Select a Variable to Explore",
-              choices = c("Yardage" = "yardage", 
-                          "Rating Average" = "rating_average",
-                          "Rating Counts" = "rating_count"))
+  selectInput("cat_var", label = "Select a Numeric Variable to Explore",
+              choices = c("Yarn Weight" = "yarn_weight_name", 
+                          "Yarn Texture" = "texture",
+                          "Yarn Company" = "yarn_company_name",
+                          "Fiber Type" = "fiber_type_name"))
 )
-```
 
-Column
---------
-```{r, warning= FALSE, echo=FALSE, message=FALSE}
-renderPlot({
-  yarn |>
-    ggplot(aes(x = .data[[input$eda_var]])) +
-    geom_boxplot()
+plotTitle <- reactive({
+  paste("Variable: ", input$cat_var)
 })
 ```
 
+```{r}
+inputPanel(
+  selectInput("num_var", label = "Select a Numeric Variable to Explore",
+              choices = c("Yardage" = "yardage", 
+                          "Rating Average" = "rating_average",
+                          "Rating Counts" = "rating_count",
+                          "Ply" = "yarn_weight_ply",
+                          "Grams" = "grams",
+                          "Rating Total" = "rating_total",
+                          "Gauge Divisor" = "gauge_divisor")))
 
-A look at clean
-=======
+plotTitle <- reactive({
+  paste("Variable: ", input$num_var)
+})
+```
+
+## Column
+
+```{r}
+renderPlot({
+  yarn |>
+    ggplot(aes(x = .data[[input$num_var]])) +
+    geom_histogram(fill = "lightblue", bins = 10) +
+    labs(title = "Distributions of Numeric Variables", subtitle = plotTitle(), x = input$num_var, y = "Count") +
+    theme_minimal()})
+```
+
+```{r}
+renderPlot({
+  yarn |>
+  count(across(all_of(input$cat_var)), sort = TRUE) |>
+  slice(1:12) |>
+  ggplot(aes(y = n, x = .data[[input$cat_var]])) +
+    geom_col(fill = "coral") +
+    labs(title = "Categorical Variable Counts", subtitle = plotTitle(), x = input$cat_var, y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.75))})
+```
+
+## Column
+
+Numeric Variables: 
+
+| Variable       | Minimum | Median | Mean  | Maximum | NA's |
+|----------------|---------|--------|-------|---------|------|
+| Yardage        | 0.00    | 246.0  | 355.6 | 32839.0 | 0    |
+| Rating Average | 1.00    | 4.69   | 4.54  | 5.00    | 0    |
+| Rating Count   | 1.00    | 5.00   | 59.99 | 21517.0 | 0    |
+| Rating Total   | 1.00    | 25.0   | 266.0 | 97630.0 | 0    |
+| Ply            | 1.00    | 8.00   | 6.60  | 12.0    | 1604 |
+| Grams          | 0.00    | 100.0  | 100.8 | 1814.0  | 567  |
+| Gauge Divisor  | 1.00    | 4.00   | 3.63  | 4.00    | 6798 |
+
+From this table we can see that all of the variables are very skewed, with Yardage, Rating Count, Rating Total, and Grams being right skewed and Rating Average is very left skewed. Gauge Divisor and Ply are both bimodal. 
+
+```{r}
+fiber_weight <- table(yarn$fiber_type_name, yarn$yarn_weight_name)
+#prop.table(fiber_weight, 1) * 100
+
+fiber_weight_melt <- melt(prop.table(fiber_weight, 1) * 100)
+ggplot(fiber_weight_melt, aes(Var2, Var1, fill=value)) +
+  geom_tile() +
+  geom_text(aes(label=sprintf("%.1f", value)), color="white") +
+  scale_fill_gradient(low="lightblue", high="darkblue") +
+  labs(title="Fiber Type (%) by Yarn Weight", x="Weight", y="Fiber Type") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.75)) +
+  theme_replace()
+```
+
+# Yarn Recommender
+
+Sidebar {.sidebar}
+---------------------------------
+```{r}
+selectInput(
+  "texture",
+  "Texture (Plies)",
+  choices = c(yarn$texture))
+
+selectInput(
+  "yarn_weight_name",
+  "Weight Class",
+  choices = c(yarn$yarn_weight_name))
+
+selectInput(
+  "fiber_type_name",
+  "Fiber Type",
+  choices = c(yarn$fiber_type_name))
+
+actionButton("go", "Recommend Yarn 🧶")
+```
+
+### Recommended Yarn
+
+```{r}
+DTOutput("recommendation_table")
+
+recommendations <- eventReactive(input$go, {
+  user_input <- list()
+  
+  if (isTruthy(input$texture)) {
+    user_input$texture <- input$texture}
+  
+  if (isTruthy(input$yarn_weight_name)) {
+    user_input$yarn_weight_name <- input$yarn_weight_name}
+  
+  if (isTruthy(input$fiber_type_name)) {
+    user_input$fiber_type_name <- input$fiber_type_name}
+  
+  recs <- recommend_from_preference(user_input)
+  
+  if (nrow(recs) == 0) {
+    return(data.frame(Message = "No recommendations found!"))}
+  
+  return(recs)})
+
+output$recommendation_table <- renderDT({
+  req(recommendations())
+  recommendations()
+}, options = list(pageLength = 5, scrollX = TRUE))
+```
+
+## Column
+
+I created a unsupervised learning model that would give the user recommendations for specific yarns based on their preferences that they can indicate. I then tried to incorporate it into this dashboard so that you could actually change the preferences but was having issues getting it to work. Instead I have the output of the functions I created in order to show the output of the model.
+
+```{python}
+user_input = {
+    'grams': 50,
+    'yardage': 300,
+    'yarn_weight_wpi': 18,
+    'texture': "plied"}
+
+recommend_from_preference(user_input)
+```
+
 

@@ -1,0 +1,61 @@
+---
+title: "Cleaning Yarn"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+yarn <- read_csv("~/Desktop/16/CS200B/yarn.csv")
+fibers <- read_csv("~/Desktop/16/CS200B/yarn_fibers.csv")
+```
+
+```{r}
+final_yarn <- yarn |>
+  left_join(fibers) |>
+  filter(discontinued == "FALSE", 
+         percentage == 100, 
+         !is.na(rating_average), 
+         !is.na(yardage), 
+         rating_count >= 1,
+         !is.na(yarn_weight_name)) |>
+  select(-c("yarn_weight_crochet_gauge", "thread_size", "wpi", "max_gauge")) |>
+  mutate(fiber_type_name = fct_recode(fiber_type_name, Wool = "Merino"), 
+         yarn_weight_name = fct_recode(yarn_weight_name, DK = "DK / Sport"), 
+         yarn_weight_name = fct_recode(yarn_weight_name, Aran = "Aran / Worsted"))
+
+final_yarn |>
+  count(rating_average)
+```
+
+```{r}
+ final_yarn |>
+  count(texture_clean)
+  
+final_yarn <- final_yarn |>
+  mutate(texture = 
+           ifelse(is.na(texture_clean), "unknown",
+           ifelse((str_detect(final_yarn$texture_clean, "4|4 single")), "4 ply",
+           ifelse((str_detect(final_yarn$texture_clean, "1-ply|1ply|1 brin|100|single|singles|1 ply|one|one ply")), "1 ply",
+           ifelse((str_detect(final_yarn$texture_clean, "plied|multi|piled|stranded|plyed|twist|cabled|handspun|mercerized|tweed|8|spun")), "plied",
+           ifelse((str_detect(final_yarn$texture_clean, "2|two ply|boucle|two-ply|double")), "2 ply",
+           ifelse((str_detect(final_yarn$texture_clean, "3|three ply|crepe|three-ply")), "3 ply", 
+           ifelse((str_detect(final_yarn$texture_clean, "roving|unspun|smooth|brushed|carded")), "roving",
+           ifelse((str_detect(final_yarn$texture_clean, "chenille|soft")), "chenille",
+           ifelse((str_detect(final_yarn$texture_clean, "chainette|blown|chainnett|chainspun|woven|chaînette|chainatte")), "blown",
+           ifelse((str_detect(final_yarn$texture_clean, "papery|tape")), "paper",
+           ifelse((str_detect(final_yarn$texture_clean, "loop|eyelash|sequins|ribbon|bouclé|thick|novelty|fur|cord|fluffy|fuzzy|slub|pom|nubby|velvet")), "constructed",
+           ifelse((str_detect(final_yarn$texture_clean, "6")), "6 ply",
+           ifelse((str_detect(final_yarn$texture_clean, "5")), "5 ply", "other"))))))))))))))
+```
+
+```{r}
+final_yarn <- final_yarn |> 
+  select(-c("discontinued", "percentage"))
+
+write_csv(final_yarn, "~/Desktop/16/CS200B/final_yarn.csv")
+```

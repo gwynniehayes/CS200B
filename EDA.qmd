@@ -13,7 +13,7 @@ library(reshape2)
 library(ggcorrplot)
 library(GGally)
 
-yarn <- read_csv("~/Desktop/16/CS200B/project/final_yarn.csv")
+yarn <- read_csv("~/Desktop/16/CS200B/final_yarn.csv")
 ```
 
 ```{r}
@@ -23,7 +23,6 @@ glimpse(yarn)
 
 ```{r}
 colSums(is.na(yarn))
-
 sapply(yarn, function(x) length(unique(x)))
 ```
 
