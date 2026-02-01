@@ -6,6 +6,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import NearestNeighbors
+from sklearn.metrics import silhouette_samples, silhouette_score
 
 yarn = pd.read_csv("~/Desktop/16/CS200B/final_yarn.csv")
 
@@ -26,7 +27,7 @@ nn_model = NearestNeighbors(n_neighbors=5, metric='euclidean')
 
 nn_model.fit(X_processed)
 
-def recommend_yarns(query_index, n_recommendations=5):
+def recommend_yarns(query_index, n_recommendations=10):
     distances, indices = nn_model.kneighbors(
         X_processed[query_index].reshape(1, -1),
         n_neighbors=n_recommendations + 1)
@@ -38,7 +39,7 @@ recommend_yarns(query_index=42)
 
 feature_columns = X.columns.tolist()
 
-def recommend_from_preference(user_input, n_recommendations=5):
+def recommend_from_preference(user_input, n_recommendations=10):
 
     user_df = pd.DataFrame(columns=feature_columns)
     user_df.loc[0] = np.nan
